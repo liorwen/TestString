@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   minWidth="955"
+			   minHeight="600"
+			   creationComplete="onCreation(event)"
+			   xmlns:local="*">
+	<local:LiveCasinoBacBettime id="betTimer"/>
+	<local:LiveCasinoBacChipsMoveObj id="chip"/>
+	<s:VGroup>
+		<s:HGroup>
+			<s:Button id="btnAddTime"
+					  label="+1秒"
+					  click="onAddClick(event)"/>
+			<s:Button id="btnSubTime"
+					  label="-1秒"
+					  click="onSubClick(event)"/>
+			<s:Button id="btnPlay"
+					  label="play"
+					  click="onPlay(event)"/>
+		</s:HGroup>
+	</s:VGroup>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.greensock.TimelineLite;
+			import com.greensock.TweenLite;
+			import com.greensock.TweenMax;
+			import com.greensock.easing.Cubic;
+			import com.greensock.easing.Linear;
+			import mx.events.FlexEvent;
+			private var _leftTime:int;
+			private var totalTime:int;
+			private var _betTime:int;
+			private var setTime:Number = 0;
+			private var tl:TimelineLite = new TimelineLite();
+
+			public function get betTime():int
+			{
+				return _betTime;
+			}
+
+			public function set betTime(value:int):void
+			{
+				_betTime = value;
+			}
+
+			protected function onCreation(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				_betTime = 10;
+				totalTime = 20;
+//				leftTime = totalTime * 100;
+//				var t0:TweenMax = TweenMax.set(this, {leftTime: (totalTime * 100)});
+//				var t1:TweenMax = TweenMax.to(this, totalTime, {leftTime: 0, ease: Linear.easeNone});
+				var t1:TweenMax = TweenMax.fromTo(betTimer, 5, {x: 120, y: 120}, {x: 300, y: 300, ease: Linear.easeNone});
+				var t2:TweenMax = TweenMax.fromTo(betTimer, 2, {alpha: 1}, {alpha: 0, ease: Cubic.easeIn});
+				tl.insert(t1, 2);
+				tl.insert(t2, 4);
+			}
+
+			public function set leftTime(value:int):void
+			{
+				_leftTime = value;
+				var t:int = Math.ceil(leftTime * 0.01);
+				var hurry:Boolean = t <= 5;
+				betTimer.yellow.visible = !hurry;
+				betTimer.red.visible = hurry;
+				var rate:int = ((totalTime * 100) - leftTime) / totalTime;
+				trace(rate, _leftTime);
+				betTimer.textTime.text = t.toString();
+				betTimer.gotoAndStop(rate);
+			}
+
+			public function get leftTime():int
+			{
+				return _leftTime;
+			}
+
+			protected function onAddClick(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				setTime++;
+				if (setTime > totalTime)
+					setTime = totalTime;
+				tl.pause(setTime);
+			}
+
+			protected function onSubClick(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				setTime--;
+				if (setTime < 0)
+					setTime = 0;
+				tl.pause(setTime);
+			}
+
+			protected function onPlay(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				tl.play(0);
+			}
+		]]>
+	</fx:Script>
+</s:Application>

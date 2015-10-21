@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				autoDrawBackground="true">
+	<s:Label text="{betTypeStr}"/>
+	<fx:Script>
+		<![CDATA[
+			import com.vws.casino.share.external.define.bac.BacBet;
+			[Bindable]
+			public var betTypeStr:String
+
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				var str:String = "";
+				var betType:int = int(value);
+				switch (betType)
+				{
+					case BacBet.BANKER:
+						str = "B";
+						break;
+					case BacBet.PLAYER:
+						str = "P";
+						break;
+					case BacBet.TIE:
+						str = "T";
+						break;
+					default:
+						str = "Z";
+						break;
+				}
+				betTypeStr = str;
+			}
+		]]>
+	</fx:Script>
+</s:ItemRenderer>
